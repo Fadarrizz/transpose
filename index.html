@@ -2,34 +2,39 @@
 <html>
     <head>
         <title>Transpose</title>
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     </head>
 
     <body>
-        <div x-data="{
-            input: '',
-            amount: 0,
-            output: null,
+        <div>
+            <input id="input" type="text" placeholder="Notes">
+            <input id="amount" type="number" value="0" min="-11" max="11">
 
-            transpose() {
+            <button id="button">Transpose</button>
+
+            <pre id="output"></pre>
+        </div> 
+
+        <script>
+            let input, amount;
+
+            function transpose(input, amount) {
                 scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
                 normalizeMap = {'Cb': 'B', 'Db': 'D#', 'Eb': 'D#', 'Fb': 'E', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#', 'E#': 'F', 'B#': 'C'}
 
-                this.output = this.input.replace(/[CDEFGAB](b|#)?/g, (match) => {
+                const output = input.replace(/[CDEFGAB](b|#)?/g, (match) => {
                     let note = normalizeMap[match] ? normalizeMap[match] : match
-                    let index = (scale.indexOf(match) + parseInt(this.amount)) % scale.length
+                    let index = (scale.indexOf(match) + parseInt(amount)) % scale.length
                     
                     return scale[index < 0 ? index + scale.length : index]
                 })
-            },
-        }" x-effect="amount = parseInt(amount)">
-            <input type="text" x-model="input" placeholder="Notes">
-            <input type="number" x-model="amount" min="-11" max="11">
 
-            <button @click="transpose">Transpose</button>
-
-            <pre x-text="output"></pre>
-        </div> 
+                document.getElementById('output').textContent = output
+            }
+            
+            document.getElementById('input').addEventListener('input', (e) => input = e.target.value)
+            document.getElementById('amount').addEventListener('input', (e) => amount = parseInt(e.target.value))
+            document.getElementById('button').addEventListener('click', (e) => transpose(input, amount))
+        </script>
     </body>
 </html>
 
