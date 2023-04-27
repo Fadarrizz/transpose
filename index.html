@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Transpose</title>
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    </head>
+
+    <body>
+        <div x-data="{
+            input: '',
+            amount: 0,
+            output: null,
+
+            transpose() {
+                scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+                normalizeMap = {'Cb': 'B', 'Db': 'D#', 'Eb': 'D#', 'Fb': 'E', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#', 'E#': 'F', 'B#': 'C'}
+
+                this.output = this.input.replace(/[CDEFGAB](b|#)?/g, (match) => {
+                    let note = normalizeMap[match] ? normalizeMap[match] : match
+                    let index = (scale.indexOf(match) + parseInt(this.amount)) % scale.length
+                    
+                    return scale[index < 0 ? index + scale.length : index]
+                })
+            },
+        }" x-effect="amount = parseInt(amount)">
+            <input type="text" x-model="input" placeholder="Notes">
+            <input type="number" x-model="amount" min="-11" max="11">
+
+            <button @click="transpose">Transpose</button>
+
+            <pre x-text="output"></pre>
+        </div> 
+    </body>
+</html>
+
